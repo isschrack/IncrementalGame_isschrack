@@ -1,5 +1,11 @@
 .icon {
-  width: 64px;
+  width: 80px;
+  height: fit-content;
   vertical-align: top;
-  border: 1px solid salmon;
+}
+
+input, button {
+  color: transparent;
+  background-color: transparent;
+  border: none;
 }
