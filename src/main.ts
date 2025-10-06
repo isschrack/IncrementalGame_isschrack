@@ -9,12 +9,10 @@ declare global {
 let alien_counter = 0;
 let lastTimestamp = performance.now();
 const user_click = 1;
-const baseButtonSize = 32;
-let buttonPopped = false;
 
 //Automated Clickers
 const jets = 0;
-const tanks = 0;
+const tanks = 3;
 const nukes = 0;
 const total_automated_clickers = jets * 1 + tanks * 3 + nukes * 5;
 
@@ -23,7 +21,6 @@ function counter_click(increment: number): void {
   alien_counter += increment;
   document.querySelector("[label='counter']")!.textContent =
     `Aliens Captured: ${alien_counter}`;
-  buttonPopped = true;
   console.log(alien_counter);
 }
 
@@ -36,21 +33,8 @@ function animateCounter(currentTimestamp: number) {
   counter_click(total_automated_clickers * elapsed);
   document.querySelector("[label='counter']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(0)}`;
-
-  const button = document.getElementById("alienButton") as HTMLButtonElement;
-  if (button) {
-    if (buttonPopped) {
-      button.style.fontSize = `${baseButtonSize + 16}px`;
-      button.style.width = `${(baseButtonSize + 16) * 2}px`;
-      button.style.height = `${(baseButtonSize + 16) * 2}px`;
-      buttonPopped = false; // reset for next frame
-    } else {
-      button.style.fontSize = `${baseButtonSize}px`;
-      button.style.width = `${baseButtonSize * 2}px`;
-      button.style.height = `${baseButtonSize * 2}px`;
-    }
-  }
-
+  
+  //Continue the animation loop
   requestAnimationFrame(animateCounter);
 }
 
