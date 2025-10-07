@@ -104,11 +104,11 @@ document.body.innerHTML = `
 
     <div class=upgrades>
       <button label='jet_button' onclick="upgrade('jet')"></button>
-      <div label='jet_count'>${jets}</div>
+      <div label='jet_count'>Jets: 0</div>
       <button label='tank_button' onclick="upgrade('tank')"></button>
-      <div label='tank_count'>${tanks}</div>
+      <div label='tank_count'>Tanks: 0</div>
       <button label='nuke_button' onclick="upgrade('nuke')"></button>
-      <div label='nuke_count'>${nukes}</div>
+      <div label='nuke_count'>Nukes: 0</div>
     </div>
   </div>
 `;
