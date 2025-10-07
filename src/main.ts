@@ -5,29 +5,32 @@ declare global {
   var counter_update: (increment: number) => void;
   var user_click: number;
   var upgrade: (type: string) => void;
-  var jets: number;
-  var tanks: number;
-  var nukes: number;
 }
 
 interface Upgrade {
-  name: string,
-  price: number,
-  growth_rate: number
-};
+  name: string;
+  price: number;
+  growth_rate: number;
+}
 
 let alien_counter = 0;
 let lastTimestamp = performance.now();
 const user_click = 1;
 
 const availableUpgrades: Upgrade[] = [
-  {name: "Jet", price: 10, growth_rate: 0.1},
-  {name: "Tank", price: 100, growth_rate: 2},
-  {name: "Nuke", price: 1000, growth_rate: 50},
+  { name: "Jet", price: 10, growth_rate: 0.1 },
+  { name: "Tank", price: 100, growth_rate: 2 },
+  { name: "Nuke", price: 1000, growth_rate: 50 },
 ];
 
+let jets = 0;
+let tanks = 0;
+let nukes = 0;
+
 function _get_growth_rate(): number {
-  const growth_rate = jets * 0.1 + tanks * 2 + nukes * 50;
+  const growth_rate = availableUpgrades[0].growth_rate * jets +
+    availableUpgrades[1].growth_rate * tanks +
+    availableUpgrades[2].growth_rate * nukes;
   document.querySelector("[label='growth_rate']")!.textContent =
     `Growth Rate: ${growth_rate.toFixed(1)} Aliens/sec`;
   return growth_rate;
@@ -47,7 +50,6 @@ function upgrade(type: string): void {
         jets++;
         document.querySelector("[label='jet_count']")!.textContent =
           `Jets: ${jets}`;
-        console.log(jets);
       }
       break;
     case "tank":
@@ -82,13 +84,13 @@ function animateCounter(currentTimestamp: number) {
   document.querySelector("[label='counter_display']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(1)}`;
   document.querySelector("[label='jet_button']")!.textContent = `Buy Jet (${
-    jet_price.toFixed(2)
+    availableUpgrades[0].price.toFixed(2)
   } Aliens)`;
   document.querySelector("[label='tank_button']")!.textContent = `Buy Tank (${
-    tank_price.toFixed(2)
+    availableUpgrades[1].price.toFixed(2)
   } Aliens)`;
   document.querySelector("[label='nuke_button']")!.textContent = `Buy Nuke (${
-    nuke_price.toFixed(2)
+    availableUpgrades[2].price.toFixed(2)
   } Aliens)`;
   //Continue the animation loop
   requestAnimationFrame(animateCounter);
