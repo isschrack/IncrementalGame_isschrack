@@ -20,7 +20,10 @@ let tanks = 0;
 let nukes = 0;
 
 function _get_growth_rate(): number {
-  return jets * 0.1 + tanks * 2 + nukes * 50;
+  const growth_rate = jets * 0.1 + tanks * 2 + nukes * 50;
+  document.querySelector("[label='growth_rate']")!.textContent =
+    `Growth Rate: ${growth_rate.toFixed(1)} Aliens/sec`;
+  return growth_rate;  
 }
 
 //increases the alien counter by the increment value
@@ -28,7 +31,6 @@ function counter_update(increment: number): void {
   alien_counter += increment;
   document.querySelector("[label='counter_display']")!.textContent =
     `Aliens Captured: ${alien_counter}`;
-  console.log(alien_counter);
 }
 
 function upgrade(type: string): void {
@@ -80,6 +82,7 @@ requestAnimationFrame(animateCounter);
 
 document.body.innerHTML = `
   <div label='counter_display'></div>
+  <div label='growth_rate'></div>
   <button label='clicker_button' onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
 
   <button label='jet_button' onclick="upgrade('jet')">Buy Jet (10 Aliens)</button>
