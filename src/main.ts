@@ -34,8 +34,6 @@ function _get_growth_rate(): number {
 //increases the alien counter by the increment value
 function counter_update(increment: number): void {
   alien_counter += increment;
-  document.querySelector("[label='counter_display']")!.textContent =
-    `Aliens Captured: ${alien_counter}`;
 }
 
 function upgrade(type: string): void {
@@ -80,13 +78,16 @@ function animateCounter(currentTimestamp: number) {
   lastTimestamp = currentTimestamp;
   counter_update(_get_growth_rate() * elapsed);
   document.querySelector("[label='counter_display']")!.textContent =
-    `Aliens Captured: ${alien_counter.toFixed(0)}`;
-  document.querySelector("[label='jet_button']")!.textContent =
-    `Buy Jet (${jet_price.toFixed(0)} Aliens)`;
-  document.querySelector("[label='tank_button']")!.textContent =
-    `Buy Tank (${tank_price.toFixed(0)} Aliens)`;
-  document.querySelector("[label='nuke_button']")!.textContent =
-    `Buy Nuke (${nuke_price.toFixed(0)} Aliens)`;
+    `Aliens Captured: ${alien_counter.toFixed(1)}`;
+  document.querySelector("[label='jet_button']")!.textContent = `Buy Jet (${
+    jet_price.toFixed(2)
+  } Aliens)`;
+  document.querySelector("[label='tank_button']")!.textContent = `Buy Tank (${
+    tank_price.toFixed(2)
+  } Aliens)`;
+  document.querySelector("[label='nuke_button']")!.textContent = `Buy Nuke (${
+    nuke_price.toFixed(2)
+  } Aliens)`;
   //Continue the animation loop
   requestAnimationFrame(animateCounter);
 }
