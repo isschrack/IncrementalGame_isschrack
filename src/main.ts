@@ -18,7 +18,10 @@ const user_click = 1;
 let jets = 0;
 let tanks = 0;
 let nukes = 0;
-const total_automated_clickers = jets * 1 + tanks * 3 + nukes * 5;
+
+function _get_growth_rate(): number {
+  return jets * 1 + tanks * 3 + nukes * 5;
+}
 
 //increases the alien counter by the increment value
 function counter_update(increment: number): void {
@@ -65,7 +68,7 @@ globalThis.upgrade = upgrade;
 function animateCounter(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
   lastTimestamp = currentTimestamp;
-  counter_update(total_automated_clickers * elapsed);
+  counter_update(_get_growth_rate() * elapsed);
   document.querySelector("[label='counter_display']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(0)}`;
   //Continue the animation loop
@@ -77,5 +80,11 @@ requestAnimationFrame(animateCounter);
 
 document.body.innerHTML = `
   <div label='counter_display'></div>
-  <button onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
+  <button label='clicker_button' onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
+  <button label='jet_button' onclick="upgrade('jet')">Buy Jet (100 Aliens)</button>
+  <div label='jet_count'>${jets}</div>
+  <button label='tank_button' onclick="upgrade('tank')">Buy Tank (300 Aliens)</button>
+  <div label='tank_count'>${tanks}</div>
+  <button label='nuke_button' onclick="upgrade('nuke')">Buy Nuke (500 Aliens)</button>
+  <div label='nuke_count'>${nukes}</div>
 `;
