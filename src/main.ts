@@ -20,7 +20,7 @@ let tanks = 0;
 let nukes = 0;
 
 function _get_growth_rate(): number {
-  return jets * 1 + tanks * 3 + nukes * 5;
+  return jets * 0.1 + tanks * 2 + nukes * 50;
 }
 
 //increases the alien counter by the increment value
@@ -43,16 +43,16 @@ function upgrade(type: string): void {
       }
       break;
     case "tank":
-      if (alien_counter >= 300) {
-        counter_update(-300);
+      if (alien_counter >= 100) {
+        counter_update(-100);
         tanks++;
         document.querySelector("[label='tank_count']")!.textContent =
           `Tanks: ${tanks}`;
       }
       break;
     case "nuke":
-      if (alien_counter >= 500) {
-        counter_update(-500);
+      if (alien_counter >= 1000) {
+        counter_update(-1000);
         nukes++;
         document.querySelector("[label='nuke_count']")!.textContent =
           `Nukes: ${nukes}`;
