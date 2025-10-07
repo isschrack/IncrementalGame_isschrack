@@ -103,11 +103,11 @@ document.body.innerHTML = `
     <br>
 
     <div class=upgrades>
-      <button label='jet_button' background=#32cd32 onclick="upgrade('jet')"></button>
+      <button label='jet_button' onclick="upgrade('jet')"></button>
       <div label='jet_count'>${jets}</div>
-      <button label='tank_button' background=#32cd32 onclick="upgrade('tank')"></button>
+      <button label='tank_button' onclick="upgrade('tank')"></button>
       <div label='tank_count'>${tanks}</div>
-      <button label='nuke_button' background=#32cd32 onclick="upgrade('nuke')"></button>
+      <button label='nuke_button' onclick="upgrade('nuke')"></button>
       <div label='nuke_count'>${nukes}</div>
     </div>
   </div>

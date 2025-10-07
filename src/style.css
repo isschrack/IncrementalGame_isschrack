@@ -11,18 +11,15 @@
   border: none;
   outline: none;
   cursor: pointer;
+  padding: 0.5rem;
 }
 
 .clicker_button:active {
-  background: #32cd32;
+  background: green;
   color: transparent;
 }
 
-.upgrades {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+
 
 .center-container {
   display: flex;
@@ -30,4 +27,16 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  button {
+    color: #06402b;
+  }
+  .upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  button {
+    background: #32cd32;
+    border: 2px solid green;
+  }
+}
 }
