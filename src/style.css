@@ -5,6 +5,15 @@
   vertical-align: top;
 }
 
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: #06402b;
+}
+
 .clicker_button {
   background: transparent;
   color: transparent;
@@ -19,24 +28,14 @@
   color: transparent;
 }
 
-
-
-.center-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  button {
-    color: #06402b;
-  }
-  .upgrades {
+.upgrades {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  button {
-    background: #32cd32;
-    border: 2px solid green;
-  }
 }
+
+.upgrades button {
+  background: #32cd32;
+  color: #06402b;
+  border: 2px solid green;
 }
