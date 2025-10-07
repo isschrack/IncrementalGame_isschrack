@@ -2,7 +2,7 @@ import alienImage from "./alien_cookie_clicker.png";
 import "./style.css";
 
 declare global {
-  var counter_click: (increment: number) => void;
+  var counter_update: (increment: number) => void;
   var user_click: number;
   var upgrade: (type: string) => void;
   var jets: number;
@@ -18,12 +18,12 @@ const user_click = 1;
 let jets = 0;
 let tanks = 0;
 let nukes = 0;
-const total_automated_clickers = jets + tanks * 3 + nukes * 5;
+const total_automated_clickers = jets * 1 + tanks * 3 + nukes * 5;
 
 //increases the alien counter by the increment value
-function counter_click(increment: number): void {
+function counter_update(increment: number): void {
   alien_counter += increment;
-  document.querySelector("[label='counter']")!.textContent =
+  document.querySelector("[label='counter_display']")!.textContent =
     `Aliens Captured: ${alien_counter}`;
   console.log(alien_counter);
 }
@@ -32,7 +32,7 @@ function upgrade(type: string): void {
   switch (type) {
     case "jet":
       if (alien_counter >= 100) {
-        alien_counter -= 100;
+        counter_update(-100);
         jets++;
         document.querySelector("[label='jet_count']")!.textContent =
           `Jets: ${jets}`;
@@ -41,32 +41,32 @@ function upgrade(type: string): void {
       break;
     case "tank":
       if (alien_counter >= 300) {
-        alien_counter -= 300;
+        counter_update(-300);
         tanks++;
-        document.querySelector("[label='tank_upgrade']")!.textContent =
+        document.querySelector("[label='tank_count']")!.textContent =
           `Tanks: ${tanks}`;
       }
       break;
     case "nuke":
       if (alien_counter >= 500) {
-        alien_counter -= 500;
+        counter_update(-500);
         nukes++;
-        document.querySelector("[label='nuke_upgrade']")!.textContent =
+        document.querySelector("[label='nuke_count']")!.textContent =
           `Nukes: ${nukes}`;
       }
       break;
   }
 }
 
-globalThis.counter_click = counter_click;
+globalThis.counter_update = counter_update;
 globalThis.user_click = user_click;
 globalThis.upgrade = upgrade;
 
 function animateCounter(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
   lastTimestamp = currentTimestamp;
-  counter_click(total_automated_clickers * elapsed);
-  document.querySelector("[label='counter']")!.textContent =
+  counter_update(total_automated_clickers * elapsed);
+  document.querySelector("[label='counter_display']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(0)}`;
   //Continue the animation loop
   requestAnimationFrame(animateCounter);
@@ -76,6 +76,6 @@ function animateCounter(currentTimestamp: number) {
 requestAnimationFrame(animateCounter);
 
 document.body.innerHTML = `
-  <div label='counter'></div>
-  <button onclick="counter_click(${user_click})"><img src="${alienImage}" class="icon"/></button>
+  <div label='counter_display'></div>
+  <button onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
 `;
