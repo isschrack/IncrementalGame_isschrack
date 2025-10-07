@@ -81,10 +81,13 @@ requestAnimationFrame(animateCounter);
 document.body.innerHTML = `
   <div label='counter_display'></div>
   <button label='clicker_button' onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
-  <button label='jet_button' onclick="upgrade('jet')">Buy Jet (100 Aliens)</button>
+
+  <button label='jet_button' onclick="upgrade('jet')">Buy Jet (10 Aliens)</button>
   <div label='jet_count'>${jets}</div>
-  <button label='tank_button' onclick="upgrade('tank')">Buy Tank (300 Aliens)</button>
+  
+  <button label='tank_button' onclick="upgrade('tank')">Buy Tank (100 Aliens)</button>
   <div label='tank_count'>${tanks}</div>
-  <button label='nuke_button' onclick="upgrade('nuke')">Buy Nuke (500 Aliens)</button>
+
+  <button label='nuke_button' onclick="upgrade('nuke')">Buy Nuke (1000 Aliens)</button>
   <div label='nuke_count'>${nukes}</div>
 `;
