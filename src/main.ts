@@ -34,8 +34,8 @@ function counter_update(increment: number): void {
 function upgrade(type: string): void {
   switch (type) {
     case "jet":
-      if (alien_counter >= 100) {
-        counter_update(-100);
+      if (alien_counter >= 10) {
+        counter_update(-10);
         jets++;
         document.querySelector("[label='jet_count']")!.textContent =
           `Jets: ${jets}`;
