@@ -68,7 +68,6 @@ function animateCounter(currentTimestamp: number) {
   counter_click(total_automated_clickers * elapsed);
   document.querySelector("[label='counter']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(0)}`;
-
   //Continue the animation loop
   requestAnimationFrame(animateCounter);
 }
@@ -77,6 +76,6 @@ function animateCounter(currentTimestamp: number) {
 requestAnimationFrame(animateCounter);
 
 document.body.innerHTML = `
-  <div label='counter'>Aliens Captured: ${alien_counter}</div>
+  <div label='counter'></div>
   <button onclick="counter_click(${user_click})"><img src="${alienImage}" class="icon"/></button>
 `;
