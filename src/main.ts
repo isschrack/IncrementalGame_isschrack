@@ -12,6 +12,7 @@ interface Upgrade {
   price: number;
   growth_rate: number;
   counter: number;
+  description: string;
 }
 
 let alien_counter = 0;
@@ -19,9 +20,42 @@ let lastTimestamp = performance.now();
 const user_click = 1;
 
 const availableUpgrades: Upgrade[] = [
-  { name: "jet", price: 10, growth_rate: 0.1, counter: 0 },
-  { name: "tank", price: 100, growth_rate: 2, counter: 0 },
-  { name: "nuke", price: 1000, growth_rate: 50, counter: 0 },
+  {
+    name: "jet",
+    price: 10,
+    growth_rate: 0.1,
+    counter: 0,
+    description: "We need backup! Increases alien production by 0.1/sec",
+  },
+  {
+    name: "tank",
+    price: 100,
+    growth_rate: 2,
+    counter: 0,
+    description:
+      "Things are getting serious! Increases alien production by 2/sec",
+  },
+  {
+    name: "nuke",
+    price: 1000,
+    growth_rate: 50,
+    counter: 0,
+    description: "Bring in the big guns! Increases alien production by 50/sec",
+  },
+  {
+    name: "laser",
+    price: 5000,
+    growth_rate: 150,
+    counter: 0,
+    description: "Precision strikes! Increases alien production by 150/sec",
+  },
+  {
+    name: "blackhole",
+    price: 20000,
+    growth_rate: 500,
+    counter: 0,
+    description: "Unleash cosmic power! Increases alien production by 500/sec",
+  },
 ];
 
 function _get_growth_rate(): number {
@@ -70,6 +104,9 @@ function autoUpdate(currentTimestamp: number) {
       document.querySelector(
         `[label='${item.name}_count']`,
       )!.textContent = `${item.name}s: ${item.counter}`;
+      document.querySelector(
+        `[label='${item.name}_description']`,
+      )!.textContent = item.description;
     }
   }
   //Continue the animation loop
@@ -89,9 +126,18 @@ document.body.innerHTML = `
     <div class=upgrades>
       <button label='jet_button' onclick="_upgrade('jet')">Buy jet (10)</button>
       <div label='jet_count'>Jets: 0</div>
+      <div label='jet_description'></div>
       <button label='tank_button' onclick="_upgrade('tank')">Buy tank (100)</button>
       <div label='tank_count'>Tanks: 0</div>
+      <div label='tank_description'></div>
       <button label='nuke_button' onclick="_upgrade('nuke')">Buy nuke (1000)</button>
       <div label='nuke_count'>Nukes: 0</div>
+      <div label='nuke_description'></div>
+      <button label='laser_button' onclick="_upgrade('laser')">Buy laser (5000)</button>
+      <div label='laser_count'>Lasers: 0</div>
+      <div label='laser_description'></div>
+      <button label='blackhole_button' onclick="_upgrade('blackhole')">Buy blackhole (20000)</button>
+      <div label='blackhole_count'>Blackholes: 0</div>
+      <div label='blackhole_description'></div>
     </div>
   </div>`;
