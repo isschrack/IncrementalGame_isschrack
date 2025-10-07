@@ -135,6 +135,8 @@ document.body.innerHTML = `
       <div label='laser_description'>${availableUpgrades[3].description}</div>
       <button label='blackhole_button' onclick="_upgrade('blackhole')">Buy blackhole (20000)</button>
       <div label='blackhole_count'>Blackholes: 0</div>
-      <div label='blackhole_description'>${availableUpgrades[4].description}</div>
+      <div label='blackhole_description'>${
+  availableUpgrades[4].description
+}</div>
     </div>
   </div>`;
