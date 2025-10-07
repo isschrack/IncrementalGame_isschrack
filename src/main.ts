@@ -4,13 +4,14 @@ import "./style.css";
 declare global {
   var counter_update: (increment: number) => void;
   var user_click: number;
-  var upgrade: (type: string) => void;
+  var _upgrade: (type: string) => void;
 }
 
 interface Upgrade {
   name: string;
   price: number;
   growth_rate: number;
+  counter: number;
 }
 
 let alien_counter = 0;
@@ -18,19 +19,16 @@ let lastTimestamp = performance.now();
 const user_click = 1;
 
 const availableUpgrades: Upgrade[] = [
-  { name: "Jet", price: 10, growth_rate: 0.1 },
-  { name: "Tank", price: 100, growth_rate: 2 },
-  { name: "Nuke", price: 1000, growth_rate: 50 },
+  { name: "jet", price: 10, growth_rate: 0.1, counter: 0 },
+  { name: "tank", price: 100, growth_rate: 2, counter: 0 },
+  { name: "nuke", price: 1000, growth_rate: 50, counter: 0 },
 ];
 
-let jets = 0;
-let tanks = 0;
-let nukes = 0;
-
 function _get_growth_rate(): number {
-  const growth_rate = availableUpgrades[0].growth_rate * jets +
-    availableUpgrades[1].growth_rate * tanks +
-    availableUpgrades[2].growth_rate * nukes;
+  const growth_rate =
+    availableUpgrades[0].growth_rate * availableUpgrades[0].counter +
+    availableUpgrades[1].growth_rate * availableUpgrades[1].counter +
+    availableUpgrades[2].growth_rate * availableUpgrades[2].counter;
   document.querySelector("[label='growth_rate']")!.textContent =
     `Growth Rate: ${growth_rate.toFixed(1)} Aliens/sec`;
   return growth_rate;
@@ -41,41 +39,22 @@ function counter_update(increment: number): void {
   alien_counter += increment;
 }
 
-function upgrade(type: string): void {
-  switch (type) {
-    case "jet":
-      if (alien_counter >= availableUpgrades[0].price) {
-        counter_update(-availableUpgrades[0].price);
-        availableUpgrades[0].price *= 1.15;
-        jets++;
-        document.querySelector("[label='jet_count']")!.textContent =
-          `Jets: ${jets}`;
-      }
-      break;
-    case "tank":
-      if (alien_counter >= availableUpgrades[1].price) {
-        counter_update(-availableUpgrades[1].price);
-        availableUpgrades[1].price *= 1.15;
-        tanks++;
-        document.querySelector("[label='tank_count']")!.textContent =
-          `Tanks: ${tanks}`;
-      }
-      break;
-    case "nuke":
-      if (alien_counter >= availableUpgrades[2].price) {
-        counter_update(-availableUpgrades[2].price);
-        availableUpgrades[2].price *= 1.15;
-        nukes++;
-        document.querySelector("[label='nuke_count']")!.textContent =
-          `Nukes: ${nukes}`;
-      }
-      break;
+function _upgrade(type: string): void {
+  for (const item of availableUpgrades) {
+    if (item.name === type && alien_counter >= item.price) {
+      counter_update(-item.price);
+      item.price *= 1.15;
+      item.counter++;
+      document.querySelector(
+        `[label='${item.name}_count']`,
+      )!.textContent = `${item.name}s: ${item.counter}`;
+    }
   }
 }
 
 globalThis.counter_update = counter_update;
 globalThis.user_click = user_click;
-globalThis.upgrade = upgrade;
+globalThis._upgrade = _upgrade;
 
 function animateCounter(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
@@ -107,12 +86,11 @@ document.body.innerHTML = `
     <br>
 
     <div class=upgrades>
-      <button label='jet_button' onclick="upgrade('jet')"></button>
+      <button label='jet_button' onclick="_upgrade('jet')"></button>
       <div label='jet_count'>Jets: 0</div>
-      <button label='tank_button' onclick="upgrade('tank')"></button>
+      <button label='tank_button' onclick="_upgrade('tank')"></button>
       <div label='tank_count'>Tanks: 0</div>
-      <button label='nuke_button' onclick="upgrade('nuke')"></button>
+      <button label='nuke_button' onclick="_upgrade('nuke')"></button>
       <div label='nuke_count'>Nukes: 0</div>
     </div>
-  </div>
-`;
+  </div>`;
