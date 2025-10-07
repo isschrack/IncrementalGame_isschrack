@@ -10,19 +10,21 @@ declare global {
   var nukes: number;
 }
 
+interface Upgrade {
+  name: string,
+  price: number,
+  growth_rate: number
+};
+
 let alien_counter = 0;
 let lastTimestamp = performance.now();
 const user_click = 1;
 
-//Upgrades
-let jets = 0;
-let tanks = 0;
-let nukes = 0;
-
-//Upgrade Prices
-let jet_price = 10;
-let tank_price = 100;
-let nuke_price = 1000;
+const availableUpgrades: Upgrade[] = [
+  {name: "Jet", price: 10, growth_rate: 0.1},
+  {name: "Tank", price: 100, growth_rate: 2},
+  {name: "Nuke", price: 1000, growth_rate: 50},
+];
 
 function _get_growth_rate(): number {
   const growth_rate = jets * 0.1 + tanks * 2 + nukes * 50;
@@ -39,9 +41,9 @@ function counter_update(increment: number): void {
 function upgrade(type: string): void {
   switch (type) {
     case "jet":
-      if (alien_counter >= 10) {
-        counter_update(-10);
-        jet_price *= 1.15;
+      if (alien_counter >= availableUpgrades[0].price) {
+        counter_update(-availableUpgrades[0].price);
+        availableUpgrades[0].price *= 1.15;
         jets++;
         document.querySelector("[label='jet_count']")!.textContent =
           `Jets: ${jets}`;
@@ -49,18 +51,18 @@ function upgrade(type: string): void {
       }
       break;
     case "tank":
-      if (alien_counter >= 100) {
-        counter_update(-100);
-        tank_price *= 1.15;
+      if (alien_counter >= availableUpgrades[1].price) {
+        counter_update(-availableUpgrades[1].price);
+        availableUpgrades[1].price *= 1.15;
         tanks++;
         document.querySelector("[label='tank_count']")!.textContent =
           `Tanks: ${tanks}`;
       }
       break;
     case "nuke":
-      if (alien_counter >= 1000) {
-        counter_update(-1000);
-        nuke_price *= 1.15;
+      if (alien_counter >= availableUpgrades[2].price) {
+        counter_update(-availableUpgrades[2].price);
+        availableUpgrades[2].price *= 1.15;
         nukes++;
         document.querySelector("[label='nuke_count']")!.textContent =
           `Nukes: ${nukes}`;
