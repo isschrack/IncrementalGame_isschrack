@@ -19,7 +19,7 @@ const user_click = 1;
 let jets = 0;
 let tanks = 0;
 let nukes = 0;
-const total_automated_clickers = jets * 1 + tanks * 3 + nukes * 5;
+const total_automated_clickers = jets + tanks * 3 + nukes * 5;
 
 //increases the alien counter by the increment value
 function counter_click(increment: number): void {
