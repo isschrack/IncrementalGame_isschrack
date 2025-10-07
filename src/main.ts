@@ -25,10 +25,10 @@ const availableUpgrades: Upgrade[] = [
 ];
 
 function _get_growth_rate(): number {
-  const growth_rate =
-    availableUpgrades[0].growth_rate * availableUpgrades[0].counter +
-    availableUpgrades[1].growth_rate * availableUpgrades[1].counter +
-    availableUpgrades[2].growth_rate * availableUpgrades[2].counter;
+  let growth_rate = 0;
+  for (const item of availableUpgrades) {
+    growth_rate += item.growth_rate * item.counter;
+  }
   document.querySelector("[label='growth_rate']")!.textContent =
     `Growth Rate: ${growth_rate.toFixed(1)} Aliens/sec`;
   return growth_rate;
