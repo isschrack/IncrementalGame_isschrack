@@ -4,6 +4,10 @@ import "./style.css";
 declare global {
   var counter_click: (increment: number) => void;
   var user_click: number;
+  var upgrade: (type: string) => void;
+  var jets: number;
+  var tanks: number;
+  var nukes: number;
 }
 
 let alien_counter = 0;
@@ -11,10 +15,6 @@ let lastTimestamp = performance.now();
 const user_click = 1;
 
 //Automated Clickers
-const jets = 0;
-const tanks = 3;
-const nukes = 0;
-const total_automated_clickers = jets * 1 + tanks * 3 + nukes * 5;
 let jets = 0;
 let tanks = 0;
 let nukes = 0;
@@ -28,8 +28,39 @@ function counter_click(increment: number): void {
   console.log(alien_counter);
 }
 
+function upgrade(type: string): void {
+  switch (type) {
+    case "jet":
+      if (alien_counter >= 100) {
+        alien_counter -= 100;
+        jets++;
+        document.querySelector("[label='jet_count']")!.textContent =
+          `Jets: ${jets}`;
+        console.log(jets);
+      }
+      break;
+    case "tank":
+      if (alien_counter >= 300) {
+        alien_counter -= 300;
+        tanks++;
+        document.querySelector("[label='tank_upgrade']")!.textContent =
+          `Tanks: ${tanks}`;
+      }
+      break;
+    case "nuke":
+      if (alien_counter >= 500) {
+        alien_counter -= 500;
+        nukes++;
+        document.querySelector("[label='nuke_upgrade']")!.textContent =
+          `Nukes: ${nukes}`;
+      }
+      break;
+  }
+}
+
 globalThis.counter_click = counter_click;
 globalThis.user_click = user_click;
+globalThis.upgrade = upgrade;
 
 function animateCounter(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
@@ -37,7 +68,7 @@ function animateCounter(currentTimestamp: number) {
   counter_click(total_automated_clickers * elapsed);
   document.querySelector("[label='counter']")!.textContent =
     `Aliens Captured: ${alien_counter.toFixed(0)}`;
-  
+
   //Continue the animation loop
   requestAnimationFrame(animateCounter);
 }
