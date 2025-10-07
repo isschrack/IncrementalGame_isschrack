@@ -45,9 +45,6 @@ function _upgrade(type: string): void {
       counter_update(-item.price);
       item.price *= 1.15;
       item.counter++;
-      document.querySelector(
-        `[label='${item.name}_count']`,
-      )!.textContent = `${item.name}s: ${item.counter}`;
     }
   }
 }
@@ -56,27 +53,31 @@ globalThis.counter_update = counter_update;
 globalThis.user_click = user_click;
 globalThis._upgrade = _upgrade;
 
-function animateCounter(currentTimestamp: number) {
+function autoUpdate(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
   lastTimestamp = currentTimestamp;
   counter_update(_get_growth_rate() * elapsed);
-  document.querySelector("[label='counter_display']")!.textContent =
-    `Aliens Captured: ${alien_counter.toFixed(1)}`;
-  document.querySelector("[label='jet_button']")!.textContent = `Buy Jet (${
-    availableUpgrades[0].price.toFixed(2)
-  } Aliens)`;
-  document.querySelector("[label='tank_button']")!.textContent = `Buy Tank (${
-    availableUpgrades[1].price.toFixed(2)
-  } Aliens)`;
-  document.querySelector("[label='nuke_button']")!.textContent = `Buy Nuke (${
-    availableUpgrades[2].price.toFixed(2)
-  } Aliens)`;
+  //Update display
+  document.querySelector("[label='counter_display']")!.textContent = `Aliens: ${
+    alien_counter.toFixed(1)
+  }`;
+  //Update upgrade counts
+  for (const item of availableUpgrades) {
+    if (item.counter > 0) {
+      document.querySelector(
+        `[label='${item.name}_button']`,
+      )!.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
+      document.querySelector(
+        `[label='${item.name}_count']`,
+      )!.textContent = `${item.name}s: ${item.counter}`;
+    }
+  }
   //Continue the animation loop
-  requestAnimationFrame(animateCounter);
+  requestAnimationFrame(autoUpdate);
 }
 
 // Start the animation
-requestAnimationFrame(animateCounter);
+requestAnimationFrame(autoUpdate);
 
 document.body.innerHTML = `
   <div class="center-container">
@@ -86,11 +87,11 @@ document.body.innerHTML = `
     <br>
 
     <div class=upgrades>
-      <button label='jet_button' onclick="_upgrade('jet')"></button>
+      <button label='jet_button' onclick="_upgrade('jet')">Buy jet (10)</button>
       <div label='jet_count'>Jets: 0</div>
-      <button label='tank_button' onclick="_upgrade('tank')"></button>
+      <button label='tank_button' onclick="_upgrade('tank')">Buy tank (100)</button>
       <div label='tank_count'>Tanks: 0</div>
-      <button label='nuke_button' onclick="_upgrade('nuke')"></button>
+      <button label='nuke_button' onclick="_upgrade('nuke')">Buy nuke (1000)</button>
       <div label='nuke_count'>Nukes: 0</div>
     </div>
   </div>`;
