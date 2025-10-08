@@ -122,19 +122,23 @@ document.body.innerHTML = `
 
     <div class=upgrades>
       <button label='jet_button' onclick="_upgrade('jet')">Buy jet (10)</button>
-      <div label='jet_count'>Jets: 0</div>
+      <div label='jet_count'>jets: 0</div>
       <div label='jet_description'>${availableUpgrades[0].description}</div>
+      
       <button label='tank_button' onclick="_upgrade('tank')">Buy tank (100)</button>
-      <div label='tank_count'>Tanks: 0</div>
+      <div label='tank_count'>tanks: 0</div>
       <div label='tank_description'>${availableUpgrades[1].description}</div>
+      
       <button label='nuke_button' onclick="_upgrade('nuke')">Buy nuke (1000)</button>
-      <div label='nuke_count'>Nukes: 0</div>
+      <div label='nuke_count'>nukes: 0</div>
       <div label='nuke_description'>${availableUpgrades[2].description}</div>
+
       <button label='laser_button' onclick="_upgrade('laser')">Buy laser (5000)</button>
-      <div label='laser_count'>Lasers: 0</div>
+      <div label='laser_count'>lasers: 0</div>
       <div label='laser_description'>${availableUpgrades[3].description}</div>
+
       <button label='blackhole_button' onclick="_upgrade('blackhole')">Buy blackhole (20000)</button>
-      <div label='blackhole_count'>Blackholes: 0</div>
+      <div label='blackhole_count'>blackholes: 0</div>
       <div label='blackhole_description'>${
   availableUpgrades[4].description
 }</div>
