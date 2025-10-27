@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  color: #06402b;
+  color: #14f8a4;
   font-family:
     "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
@@ -39,7 +39,7 @@
 
 .upgrades button {
   background: #32cd32;
-  color: #06402b;
+  color: #14f8a4;
   border: 2px solid green;
   font-family:
     "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",

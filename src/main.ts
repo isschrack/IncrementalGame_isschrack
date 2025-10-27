@@ -84,6 +84,10 @@ const ui: UIRefs = {
 };
 
 // ------------------ Core Logic ------------------
+// small helper
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 function _get_growth_rate(): number {
   let growth_rate = 0;
   for (const item of availableUpgrades) {
@@ -112,7 +116,9 @@ function _upgrade(type: string): void {
       const btn = ui.upgradeButtons.get(item.name);
       if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
       const countEl = ui.upgradeCountEls.get(item.name);
-      if (countEl) countEl.textContent = `${item.name}s: ${item.counter}`;
+      if (countEl) {
+        countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
+      }
     }
   }
 }
@@ -135,7 +141,9 @@ function autoUpdate(currentTimestamp: number) {
       const btn = ui.upgradeButtons.get(item.name);
       if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
       const countEl = ui.upgradeCountEls.get(item.name);
-      if (countEl) countEl.textContent = `${item.name}s: ${item.counter}`;
+      if (countEl) {
+        countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
+      }
     }
   }
 
@@ -204,7 +212,7 @@ function buildUI() {
 
     const countDiv = document.createElement("div");
     countDiv.setAttribute("label", `${item.name}_count`);
-    countDiv.textContent = `${item.name}s: ${item.counter}`;
+    countDiv.textContent = `${capitalize(item.name)}s: ${item.counter}`;
     upgradesDiv.appendChild(countDiv);
     ui.upgradeCountEls.set(item.name, countDiv);
 
