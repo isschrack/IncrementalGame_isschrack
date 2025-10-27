@@ -1,4 +1,5 @@
 import alienImage from "./alien_cookie_clicker.png";
+import bgImage from "./aliens_attacking.png";
 import "./style.css";
 
 /*
@@ -147,6 +148,22 @@ globalThis._upgrade = _upgrade;
 
 // ------------------ UI Construction ------------------
 function buildUI() {
+  // create a non-interactive full-viewport background div using the imported image
+  const bgDiv = document.createElement("div");
+  bgDiv.className = "app-bg";
+  bgDiv.style.position = "fixed";
+  bgDiv.style.top = "0";
+  bgDiv.style.right = "0";
+  bgDiv.style.bottom = "0";
+  bgDiv.style.left = "0";
+  bgDiv.style.backgroundImage = `url(${bgImage})`;
+  bgDiv.style.backgroundSize = "cover";
+  bgDiv.style.backgroundPosition = "center";
+  bgDiv.style.backgroundRepeat = "no-repeat";
+  bgDiv.style.zIndex = "-1"; // keep behind app UI
+  bgDiv.style.pointerEvents = "none"; // don't intercept clicks
+  document.body.appendChild(bgDiv);
+
   const centerContainer = document.createElement("div");
   centerContainer.className = "center-container";
 
