@@ -124,7 +124,9 @@ function autoUpdate(currentTimestamp: number) {
 
   // Update display
   if (ui.counterDisplay) {
-    ui.counterDisplay.textContent = `Aliens: ${alien_counter.toFixed(1)}`;
+    ui.counterDisplay.textContent = `Aliens Terminated: ${
+      alien_counter.toFixed(1)
+    }`;
   }
 
   // Update upgrade counts and prices for visible upgrades
