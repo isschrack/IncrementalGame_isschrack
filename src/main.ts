@@ -1,12 +1,21 @@
 import alienImage from "./alien_cookie_clicker.png";
 import "./style.css";
 
+/*
+  Sections:
+  - Data (types, state, upgrades)
+  - Core Logic (growth calculation, state mutation)
+  - UI Construction (buildUI)
+  - Initialization (wire globals, start loop)
+*/
+
 declare global {
   var counter_update: (increment: number) => void;
   var user_click: number;
   var _upgrade: (type: string) => void;
 }
 
+// ------------------ Data ------------------
 interface Upgrade {
   name: string;
   price: number;
@@ -58,17 +67,36 @@ const availableUpgrades: Upgrade[] = [
   },
 ];
 
+// UI references populated by buildUI()
+type UIRefs = {
+  counterDisplay: HTMLElement | null;
+  growthRateDisplay: HTMLElement | null;
+  upgradeButtons: Map<string, HTMLButtonElement>;
+  upgradeCountEls: Map<string, HTMLElement>;
+};
+
+const ui: UIRefs = {
+  counterDisplay: null,
+  growthRateDisplay: null,
+  upgradeButtons: new Map(),
+  upgradeCountEls: new Map(),
+};
+
+// ------------------ Core Logic ------------------
 function _get_growth_rate(): number {
   let growth_rate = 0;
   for (const item of availableUpgrades) {
     growth_rate += item.growth_rate * item.counter;
   }
-  document.querySelector("[label='growth_rate']")!.textContent =
-    `Growth Rate: ${growth_rate.toFixed(1)} Aliens/sec`;
+  if (ui.growthRateDisplay) {
+    ui.growthRateDisplay.textContent = `Growth Rate: ${
+      growth_rate.toFixed(1)
+    } Aliens/sec`;
+  }
   return growth_rate;
 }
 
-//increases the alien counter by the increment value
+// increases the alien counter by the increment value
 function counter_update(increment: number): void {
   alien_counter += increment;
 }
@@ -79,85 +107,99 @@ function _upgrade(type: string): void {
       counter_update(-item.price);
       item.price *= 1.15;
       item.counter++;
+      // update UI immediately for the purchased upgrade
+      const btn = ui.upgradeButtons.get(item.name);
+      if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
+      const countEl = ui.upgradeCountEls.get(item.name);
+      if (countEl) countEl.textContent = `${item.name}s: ${item.counter}`;
     }
   }
 }
-
-globalThis.counter_update = counter_update;
-globalThis.user_click = user_click;
-globalThis._upgrade = _upgrade;
 
 function autoUpdate(currentTimestamp: number) {
   const elapsed = (currentTimestamp - lastTimestamp) / 1000; // seconds
   lastTimestamp = currentTimestamp;
   counter_update(_get_growth_rate() * elapsed);
-  //Update display
-  document.querySelector("[label='counter_display']")!.textContent = `Aliens: ${
-    alien_counter.toFixed(1)
-  }`;
-  //Update upgrade counts
+
+  // Update display
+  if (ui.counterDisplay) {
+    ui.counterDisplay.textContent = `Aliens: ${alien_counter.toFixed(1)}`;
+  }
+
+  // Update upgrade counts and prices for visible upgrades
   for (const item of availableUpgrades) {
     if (item.counter > 0) {
-      document.querySelector(
-        `[label='${item.name}_button']`,
-      )!.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
-      document.querySelector(
-        `[label='${item.name}_count']`,
-      )!.textContent = `${item.name}s: ${item.counter}`;
+      const btn = ui.upgradeButtons.get(item.name);
+      if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
+      const countEl = ui.upgradeCountEls.get(item.name);
+      if (countEl) countEl.textContent = `${item.name}s: ${item.counter}`;
     }
   }
-  //Continue the animation loop
+
+  // Continue the animation loop
   requestAnimationFrame(autoUpdate);
 }
 
-// Start the animation
-requestAnimationFrame(autoUpdate);
+// expose some helpers to window for debugging or external wiring
+globalThis.counter_update = counter_update;
+globalThis.user_click = user_click;
+globalThis._upgrade = _upgrade;
 
-// Build DOM using createElement instead of innerHTML to avoid injecting HTML and to attach event listeners safely.
-const centerContainer = document.createElement("div");
-centerContainer.className = "center-container";
+// ------------------ UI Construction ------------------
+function buildUI() {
+  const centerContainer = document.createElement("div");
+  centerContainer.className = "center-container";
 
-const counterDisplay = document.createElement("div");
-counterDisplay.setAttribute("label", "counter_display");
-centerContainer.appendChild(counterDisplay);
+  const counterDisplay = document.createElement("div");
+  counterDisplay.setAttribute("label", "counter_display");
+  centerContainer.appendChild(counterDisplay);
+  ui.counterDisplay = counterDisplay;
 
-const growthRateDisplay = document.createElement("div");
-growthRateDisplay.setAttribute("label", "growth_rate");
-centerContainer.appendChild(growthRateDisplay);
+  const growthRateDisplay = document.createElement("div");
+  growthRateDisplay.setAttribute("label", "growth_rate");
+  centerContainer.appendChild(growthRateDisplay);
+  ui.growthRateDisplay = growthRateDisplay;
 
-const clickerButton = document.createElement("button");
-clickerButton.className = "clicker_button";
-clickerButton.setAttribute("label", "clicker_button");
-clickerButton.addEventListener("click", () => counter_update(user_click));
-const iconImg = document.createElement("img");
-iconImg.src = alienImage;
-iconImg.className = "icon";
-clickerButton.appendChild(iconImg);
-centerContainer.appendChild(clickerButton);
+  const clickerButton = document.createElement("button");
+  clickerButton.className = "clicker_button";
+  clickerButton.setAttribute("label", "clicker_button");
+  clickerButton.addEventListener("click", () => counter_update(user_click));
+  const iconImg = document.createElement("img");
+  iconImg.src = alienImage;
+  iconImg.className = "icon";
+  clickerButton.appendChild(iconImg);
+  centerContainer.appendChild(clickerButton);
 
-centerContainer.appendChild(document.createElement("br"));
+  centerContainer.appendChild(document.createElement("br"));
 
-const upgradesDiv = document.createElement("div");
-upgradesDiv.className = "upgrades";
+  const upgradesDiv = document.createElement("div");
+  upgradesDiv.className = "upgrades";
 
-for (const item of availableUpgrades) {
-  const btn = document.createElement("button");
-  btn.setAttribute("label", `${item.name}_button`);
-  btn.textContent = `Buy ${item.name} (${item.price})`;
-  // Use the upgrade function on click
-  btn.addEventListener("click", () => _upgrade(item.name));
-  upgradesDiv.appendChild(btn);
+  for (const item of availableUpgrades) {
+    const btn = document.createElement("button");
+    btn.setAttribute("label", `${item.name}_button`);
+    btn.textContent = `Buy ${item.name} (${item.price})`;
+    btn.addEventListener("click", () => _upgrade(item.name));
+    upgradesDiv.appendChild(btn);
+    ui.upgradeButtons.set(item.name, btn);
 
-  const countDiv = document.createElement("div");
-  countDiv.setAttribute("label", `${item.name}_count`);
-  countDiv.textContent = `${item.name}s: ${item.counter}`;
-  upgradesDiv.appendChild(countDiv);
+    const countDiv = document.createElement("div");
+    countDiv.setAttribute("label", `${item.name}_count`);
+    countDiv.textContent = `${item.name}s: ${item.counter}`;
+    upgradesDiv.appendChild(countDiv);
+    ui.upgradeCountEls.set(item.name, countDiv);
 
-  const descDiv = document.createElement("div");
-  descDiv.setAttribute("label", `${item.name}_description`);
-  descDiv.textContent = item.description;
-  upgradesDiv.appendChild(descDiv);
+    const descDiv = document.createElement("div");
+    descDiv.setAttribute("label", `${item.name}_description`);
+    descDiv.textContent = item.description;
+    upgradesDiv.appendChild(descDiv);
+  }
+
+  centerContainer.appendChild(upgradesDiv);
+  document.body.appendChild(centerContainer);
 }
 
-centerContainer.appendChild(upgradesDiv);
-document.body.appendChild(centerContainer);
+// ------------------ Initialization ------------------
+buildUI();
+// start the update loop
+requestAnimationFrame(autoUpdate);
