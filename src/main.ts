@@ -94,9 +94,9 @@ function _get_growth_rate(): number {
     growth_rate += item.growth_rate * item.counter;
   }
   if (ui.growthRateDisplay) {
-    ui.growthRateDisplay.textContent = `Growth Rate: ${
+    ui.growthRateDisplay.textContent = `Destruction Rate: ${
       growth_rate.toFixed(1)
-    } Aliens/sec`;
+    } Aliens Killed/sec`;
   }
   return growth_rate;
 }

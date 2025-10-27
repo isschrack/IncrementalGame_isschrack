@@ -26,9 +26,12 @@
   padding: 0.5rem;
 }
 
+.clicker_button:hover {
+  transform: scale(1.07);
+}
+
 .clicker_button:active {
-  background: green;
-  color: transparent;
+  transform: scale(1.1);
 }
 
 .upgrades {
@@ -39,7 +42,7 @@
 
 .upgrades button {
   background: #32cd32;
-  color: #14f8a4;
+  color: white;
   border: 2px solid green;
   font-family:
     "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
