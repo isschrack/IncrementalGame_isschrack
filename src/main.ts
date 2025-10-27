@@ -113,34 +113,51 @@ function autoUpdate(currentTimestamp: number) {
 // Start the animation
 requestAnimationFrame(autoUpdate);
 
-document.body.innerHTML = `
-  <div class="center-container">
-    <div label='counter_display'></div>
-    <div label='growth_rate'></div>
-    <button class="clicker_button" label='clicker_button' onclick="counter_update(${user_click})"><img src="${alienImage}" class="icon"/></button>
-    <br>
+// Build DOM using createElement instead of innerHTML to avoid injecting HTML and to attach event listeners safely.
+const centerContainer = document.createElement("div");
+centerContainer.className = "center-container";
 
-    <div class=upgrades>
-      <button label='jet_button' onclick="_upgrade('jet')">Buy jet (10)</button>
-      <div label='jet_count'>jets: 0</div>
-      <div label='jet_description'>${availableUpgrades[0].description}</div>
-      
-      <button label='tank_button' onclick="_upgrade('tank')">Buy tank (100)</button>
-      <div label='tank_count'>tanks: 0</div>
-      <div label='tank_description'>${availableUpgrades[1].description}</div>
-      
-      <button label='nuke_button' onclick="_upgrade('nuke')">Buy nuke (1000)</button>
-      <div label='nuke_count'>nukes: 0</div>
-      <div label='nuke_description'>${availableUpgrades[2].description}</div>
+const counterDisplay = document.createElement("div");
+counterDisplay.setAttribute("label", "counter_display");
+centerContainer.appendChild(counterDisplay);
 
-      <button label='laser_button' onclick="_upgrade('laser')">Buy laser (5000)</button>
-      <div label='laser_count'>lasers: 0</div>
-      <div label='laser_description'>${availableUpgrades[3].description}</div>
+const growthRateDisplay = document.createElement("div");
+growthRateDisplay.setAttribute("label", "growth_rate");
+centerContainer.appendChild(growthRateDisplay);
 
-      <button label='blackhole_button' onclick="_upgrade('blackhole')">Buy blackhole (20000)</button>
-      <div label='blackhole_count'>blackholes: 0</div>
-      <div label='blackhole_description'>${
-  availableUpgrades[4].description
-}</div>
-    </div>
-  </div>`;
+const clickerButton = document.createElement("button");
+clickerButton.className = "clicker_button";
+clickerButton.setAttribute("label", "clicker_button");
+clickerButton.addEventListener("click", () => counter_update(user_click));
+const iconImg = document.createElement("img");
+iconImg.src = alienImage;
+iconImg.className = "icon";
+clickerButton.appendChild(iconImg);
+centerContainer.appendChild(clickerButton);
+
+centerContainer.appendChild(document.createElement("br"));
+
+const upgradesDiv = document.createElement("div");
+upgradesDiv.className = "upgrades";
+
+for (const item of availableUpgrades) {
+  const btn = document.createElement("button");
+  btn.setAttribute("label", `${item.name}_button`);
+  btn.textContent = `Buy ${item.name} (${item.price})`;
+  // Use the upgrade function on click
+  btn.addEventListener("click", () => _upgrade(item.name));
+  upgradesDiv.appendChild(btn);
+
+  const countDiv = document.createElement("div");
+  countDiv.setAttribute("label", `${item.name}_count`);
+  countDiv.textContent = `${item.name}s: ${item.counter}`;
+  upgradesDiv.appendChild(countDiv);
+
+  const descDiv = document.createElement("div");
+  descDiv.setAttribute("label", `${item.name}_description`);
+  descDiv.textContent = item.description;
+  upgradesDiv.appendChild(descDiv);
+}
+
+centerContainer.appendChild(upgradesDiv);
+document.body.appendChild(centerContainer);
