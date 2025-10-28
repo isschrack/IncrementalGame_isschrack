@@ -3,4 +3,7 @@
 The world is being attacked by aliens. You must lead your military to take them down. Buy upgrades to bring in reinforcements.
 
 Inspired by:
+
 https://github.com/KupoDupo/CMPM-121-D1-Incremental-Game
+
+- Liked the hover over effect on the carrot button

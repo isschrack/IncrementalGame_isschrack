@@ -1,5 +1,6 @@
 import alienImage from "./alien_cookie_clicker.png";
 import bgImage from "./aliens_attacking.png";
+import gunShot from "./gun-shot.mp3";
 import "./style.css";
 
 /*
@@ -88,6 +89,24 @@ const ui: UIRefs = {
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
+// audio for clicker
+const shotAudio = new Audio(gunShot);
+shotAudio.preload = "auto";
+// emoji map for upgrades
+const upgradeEmoji: Record<string, string> = {
+  jet: "✈️",
+  tank: "🪖",
+  nuke: "💥",
+  laser: "🌈",
+  blackhole: "🕳️",
+};
+// render the button contents (emoji or image + price)
+function renderUpgradeButton(btn: HTMLButtonElement, item: Upgrade) {
+  // remove existing children but keep event listeners
+  while (btn.firstChild) btn.removeChild(btn.firstChild);
+  const emoji = upgradeEmoji[item.name] ?? "";
+  btn.appendChild(document.createTextNode(`${emoji} ${item.price.toFixed(2)}`));
+}
 function _get_growth_rate(): number {
   let growth_rate = 0;
   for (const item of availableUpgrades) {
@@ -114,7 +133,7 @@ function _upgrade(type: string): void {
       item.counter++;
       // update UI immediately for the purchased upgrade
       const btn = ui.upgradeButtons.get(item.name);
-      if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
+      if (btn) renderUpgradeButton(btn, item);
       const countEl = ui.upgradeCountEls.get(item.name);
       if (countEl) {
         countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
@@ -139,7 +158,7 @@ function autoUpdate(currentTimestamp: number) {
   for (const item of availableUpgrades) {
     if (item.counter > 0) {
       const btn = ui.upgradeButtons.get(item.name);
-      if (btn) btn.textContent = `Buy ${item.name} (${item.price.toFixed(2)})`;
+      if (btn) renderUpgradeButton(btn, item);
       const countEl = ui.upgradeCountEls.get(item.name);
       if (countEl) {
         countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
@@ -190,7 +209,21 @@ function buildUI() {
   const clickerButton = document.createElement("button");
   clickerButton.className = "clicker_button";
   clickerButton.setAttribute("label", "clicker_button");
-  clickerButton.addEventListener("click", () => counter_update(user_click));
+  clickerButton.addEventListener("click", () => {
+    // play sound (reset to start so rapid clicks replay)
+    try {
+      shotAudio.currentTime = 0;
+      const p = shotAudio.play();
+      if (p && typeof p.then === "function") {
+        p.catch(() => {
+          /* swallow play() promise rejection (autoplay policies) */
+        });
+      }
+    } catch {
+      // ignore audio errors
+    }
+    counter_update(user_click);
+  });
   const iconImg = document.createElement("img");
   iconImg.src = alienImage;
   iconImg.className = "icon";
@@ -205,7 +238,8 @@ function buildUI() {
   for (const item of availableUpgrades) {
     const btn = document.createElement("button");
     btn.setAttribute("label", `${item.name}_button`);
-    btn.textContent = `Buy ${item.name} (${item.price})`;
+    const emoji = upgradeEmoji[item.name] ?? "";
+    btn.textContent = `${emoji} ${item.price.toFixed(2)}`;
     btn.addEventListener("click", () => _upgrade(item.name));
     upgradesDiv.appendChild(btn);
     ui.upgradeButtons.set(item.name, btn);
