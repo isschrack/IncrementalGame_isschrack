@@ -102,10 +102,21 @@ const upgradeEmoji: Record<string, string> = {
 };
 // render the button contents (emoji or image + price)
 function renderUpgradeButton(btn: HTMLButtonElement, item: Upgrade) {
-  // remove existing children but keep event listeners
-  while (btn.firstChild) btn.removeChild(btn.firstChild);
+  // update background based on whether the player can afford the upgrade
+  // use setProperty with the 'important' priority to ensure the inline
+  // background wins over any stylesheet rules (helps if CSS uses strong
+  // specificity or !important elsewhere)
+  if (alien_counter >= item.price) {
+    btn.style.setProperty("background", "#21ffaeff", "important");
+  } else {
+    btn.style.setProperty("background", "#14f8a537", "important");
+  }
+  // richer innerHTML: emoji + name, quantity, cost, rate and flavor/description
   const emoji = upgradeEmoji[item.name] ?? "";
-  btn.appendChild(document.createTextNode(`${emoji} ${item.price.toFixed(2)}`));
+  const name = capitalize(item.name);
+  btn.innerHTML = `${emoji} ${name} x${item.counter}<br>[ $${
+    item.price.toFixed(2)
+  } ~ $${item.growth_rate.toFixed(2)}/sec ]<br><br>${item.description}`;
 }
 function _get_growth_rate(): number {
   let growth_rate = 0;
@@ -154,15 +165,13 @@ function autoUpdate(currentTimestamp: number) {
     }`;
   }
 
-  // Update upgrade counts and prices for visible upgrades
+  // Update upgrade buttons (always re-render so affordability/colors stay in sync)
   for (const item of availableUpgrades) {
-    if (item.counter > 0) {
-      const btn = ui.upgradeButtons.get(item.name);
-      if (btn) renderUpgradeButton(btn, item);
-      const countEl = ui.upgradeCountEls.get(item.name);
-      if (countEl) {
-        countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
-      }
+    const btn = ui.upgradeButtons.get(item.name);
+    if (btn) renderUpgradeButton(btn, item);
+    const countEl = ui.upgradeCountEls.get(item.name);
+    if (countEl) {
+      countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
     }
   }
 
@@ -238,22 +247,13 @@ function buildUI() {
   for (const item of availableUpgrades) {
     const btn = document.createElement("button");
     btn.setAttribute("label", `${item.name}_button`);
-    const emoji = upgradeEmoji[item.name] ?? "";
-    btn.textContent = `${emoji} ${item.price.toFixed(2)}`;
     btn.addEventListener("click", () => _upgrade(item.name));
+    // render with the new richer display
+    renderUpgradeButton(btn, item);
     upgradesDiv.appendChild(btn);
     ui.upgradeButtons.set(item.name, btn);
 
-    const countDiv = document.createElement("div");
-    countDiv.setAttribute("label", `${item.name}_count`);
-    countDiv.textContent = `${capitalize(item.name)}s: ${item.counter}`;
-    upgradesDiv.appendChild(countDiv);
-    ui.upgradeCountEls.set(item.name, countDiv);
-
-    const descDiv = document.createElement("div");
-    descDiv.setAttribute("label", `${item.name}_description`);
-    descDiv.textContent = item.description;
-    upgradesDiv.appendChild(descDiv);
+    // counters and descriptions are now shown inside the upgrade button itself
   }
 
   centerContainer.appendChild(upgradesDiv);
