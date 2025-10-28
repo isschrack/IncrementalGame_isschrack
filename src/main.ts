@@ -74,14 +74,12 @@ type UIRefs = {
   counterDisplay: HTMLElement | null;
   growthRateDisplay: HTMLElement | null;
   upgradeButtons: Map<string, HTMLButtonElement>;
-  upgradeCountEls: Map<string, HTMLElement>;
 };
 
 const ui: UIRefs = {
   counterDisplay: null,
   growthRateDisplay: null,
   upgradeButtons: new Map(),
-  upgradeCountEls: new Map(),
 };
 
 // ------------------ Core Logic ------------------
@@ -102,16 +100,25 @@ const upgradeEmoji: Record<string, string> = {
 };
 // render the button contents (emoji or image + price)
 function renderUpgradeButton(btn: HTMLButtonElement, item: Upgrade) {
-  // update background based on whether the player can afford the upgrade
-  // use setProperty with the 'important' priority to ensure the inline
-  // background wins over any stylesheet rules (helps if CSS uses strong
-  // specificity or !important elsewhere)
-  if (alien_counter >= item.price) {
-    btn.style.setProperty("background", "#21ffaeff", "important");
-  } else {
-    btn.style.setProperty("background", "#14f8a537", "important");
-  }
-  // richer innerHTML: emoji + name, quantity, cost, rate and flavor/description
+  const affordable = alien_counter >= item.price;
+  // background, text and border adapt to affordability; use important so
+  // inline styles win over stylesheet rules
+  btn.style.setProperty(
+    "background",
+    affordable ? "#21ffaeff" : "#14f8a537",
+    "important",
+  );
+  btn.style.setProperty(
+    "color",
+    affordable ? "#000000" : "#ffffff",
+    "important",
+  );
+  btn.style.setProperty(
+    "border-color",
+    affordable ? "#0b6b3a" : "green",
+    "important",
+  );
+
   const emoji = upgradeEmoji[item.name] ?? "";
   const name = capitalize(item.name);
   btn.innerHTML = `${emoji} ${name} x${item.counter}<br>[ $${
@@ -145,10 +152,6 @@ function _upgrade(type: string): void {
       // update UI immediately for the purchased upgrade
       const btn = ui.upgradeButtons.get(item.name);
       if (btn) renderUpgradeButton(btn, item);
-      const countEl = ui.upgradeCountEls.get(item.name);
-      if (countEl) {
-        countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
-      }
     }
   }
 }
@@ -169,10 +172,6 @@ function autoUpdate(currentTimestamp: number) {
   for (const item of availableUpgrades) {
     const btn = ui.upgradeButtons.get(item.name);
     if (btn) renderUpgradeButton(btn, item);
-    const countEl = ui.upgradeCountEls.get(item.name);
-    if (countEl) {
-      countEl.textContent = `${capitalize(item.name)}s: ${item.counter}`;
-    }
   }
 
   // Continue the animation loop
